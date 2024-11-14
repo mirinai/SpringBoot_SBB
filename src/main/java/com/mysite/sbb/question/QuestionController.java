@@ -28,6 +28,7 @@ public class QuestionController {
 //		List<Question> questionList = this.questionRepository.findAll(); // 리포지토리를 사용해 모든 질문 데이터를 가져옴
 		
 		List<Question> questionList = this.questionService.getList();
+		
 		model.addAttribute("questionList", questionList); 
 		// 모델에 "questionList"라는 이름으로 데이터를 추가하여 뷰로 전달
 		

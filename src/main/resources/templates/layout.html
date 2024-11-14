@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<!--  Required meta tags-->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+	<!-- Bootstrap CSS-->
+	<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}">
+	<!-- SBB CSS-->
+	<link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+	<title>Hello, sbb!</title>
+</head>
+<body>
+	<!-- 기본 템플릿 안에 삽입될 내용 start -->
+	<th:block layout:fragment="content"></th:block> <!-- 템플릿 레이아웃 시스템을 사용해 "content"라는 이름의 조각을 삽입할 위치 설정 -->
+	<!-- 기본 템플릿 안에 삽입될 내용 end -->
+</body>
+</html>
