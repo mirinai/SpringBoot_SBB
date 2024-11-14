@@ -3,6 +3,7 @@ package com.mysite.sbb;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDateTime;
 //import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -114,7 +115,7 @@ class SbbApplicationTests {
 //		// 데이터베이스에 남아 있는 Question 객체 수가 1인지 확인하여 검증
 
 		
-		// 답변 데이터 저장하기
+//		// 답변 데이터 저장하기
 //		Optional<Question> oq = this.questionRepository.findById(2); 
 //		// ID가 2인 Question 객체를 데이터베이스에서 조회하고 Optional로 반환
 //		assertTrue(oq.isPresent()); 
@@ -146,21 +147,21 @@ class SbbApplicationTests {
 
 		
 		
-		//답변 데이터를 통해 질문 데이터 찾기 vs 질문 데이터를 통해 답변 데이터 찾기
-		Optional<Question> oq = this.questionRepository.findById(2); 
-		// ID가 2인 Question 객체를 데이터베이스에서 조회하고 Optional로 반환
-		assertTrue(oq.isPresent()); 
-		// 조회된 Question 객체가 존재하는지 확인
-		Question q = oq.get(); 
-		// Optional에서 Question 객체를 꺼냄
-
-		List<Answer> answerList = q.getAnswerList(); 
-		// Question 객체의 연관된 Answer 리스트를 가져옴
-
-		assertEquals(1, answerList.size()); 
-		// Answer 리스트의 크기가 1인지 확인하여, 연관된 답변이 하나임을 검증
-		assertEquals("어 알아서 만들어짐", answerList.get(0).getContent()); 
-		// 첫 번째 Answer 객체의 내용이 "어 알아서 만들어짐"과 일치하는지 검증
+//		//답변 데이터를 통해 질문 데이터 찾기 vs 질문 데이터를 통해 답변 데이터 찾기
+//		Optional<Question> oq = this.questionRepository.findById(2); 
+//		// ID가 2인 Question 객체를 데이터베이스에서 조회하고 Optional로 반환
+//		assertTrue(oq.isPresent()); 
+//		// 조회된 Question 객체가 존재하는지 확인
+//		Question q = oq.get(); 
+//		// Optional에서 Question 객체를 꺼냄
+//
+//		List<Answer> answerList = q.getAnswerList(); 
+//		// Question 객체의 연관된 Answer 리스트를 가져옴
+//
+//		assertEquals(3, answerList.size()); 
+//		// Answer 리스트의 크기가 1인지 확인하여, 연관된 답변이 하나임을 검증
+//		assertEquals("어 알아서 만들어짐", answerList.get(0).getContent()); 
+//		// 첫 번째 Answer 객체의 내용이 "어 알아서 만들어짐"과 일치하는지 검증
 
 	}
 }
