@@ -39,9 +39,11 @@
 	</div>
 	<!-- 답변 작성 -->
 	<!-- 답변 작성 폼: 답변 내용을 입력하고 제출할 수 있음 -->
-	<form th:action="@{|/answer/create/${question.id}|}" method="post">
+	<form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="mb-3">
 		<!-- 답변 내용을 입력하는 텍스트 영역 -->
-		<textarea name="content" id="content" rows="15"></textarea>
+		<div th:replace="~{form_errors :: formErrorsFragment}"></div>
+		
+		<textarea th:field="*{content}" id="content" rows="15" class="form-control"></textarea>
 
 		<!-- 답변 등록 버튼 -->
 		<input type="submit" value="답변 등록">

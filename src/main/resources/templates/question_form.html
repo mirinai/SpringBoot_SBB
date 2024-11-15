@@ -1,0 +1,43 @@
+<html layout:decorate="~{layout}">
+	<!-- layout:decorate="~{layout}"는 이 HTML 문서가 "layout"이라는 기본 템플릿을 확장하도록 설정합니다.
+	     이 구문을 통해 공통 레이아웃 파일(layout.html)의 구조를 재사용할 수 있습니다. -->
+
+	<div layout:fragment="content" class="container">
+		<!-- layout:fragment="content"는 이 div 요소를 "content"라는 이름의 조각(fragment)으로 정의합니다.
+		     공통 레이아웃 파일(layout.html)의 "content" 영역에 이 내용을 삽입합니다.
+		     "container" 클래스는 Bootstrap 스타일로 페이지 내용을 중앙 정렬하고 여백을 추가합니다. -->
+
+		<h5 class="my-3 border-bottom pb-2">질문 등록</h5>
+		<!-- "질문 등록"이라는 제목을 표시합니다.
+		     "my-3"는 상하 여백을 추가하고, "border-bottom"은 하단에 경계를 추가하며,
+		     "pb-2"는 아래쪽 패딩을 추가하여 디자인을 개선합니다. -->
+
+		<form th:action="@{/question/create}" th:object="${questionForm}" method="post">
+			<!-- "질문 등록"을 위한 폼(form) 요소입니다.
+			     th:action="@{/question/create}"는 폼 제출 시 "/question/create" URL로 POST 요청을 보냅니다.
+			     th:object="${questionForm}"는 폼 데이터와 연결된 객체(QuestionForm)를 설정합니다. -->
+
+			<div th:replace="~{form_errors :: formErrorsFragment}"></div>
+
+			<div class="mb-3">
+				<label for="subject" class="form-label">제목</label>
+				<!-- 제목 입력 필드의 레이블로, "form-label" 클래스는 Bootstrap 스타일을 적용합니다. -->
+				<input type="text" th:field="*{subject}" id="subject" class="form-control">
+				<!-- 제목을 입력하기 위한 텍스트 필드입니다.
+				     "form-control" 클래스는 Bootstrap 스타일로 텍스트 필드를 꾸며줍니다. -->
+			</div>
+
+			<div class="mb-3">
+				<label for="content" class="form-label">내용</label>
+				<!-- 내용 입력 필드의 레이블로, "form-label" 클래스는 Bootstrap 스타일을 적용합니다. -->
+				<textarea th:field="*{content}" id="content" class="form-control" rows="10"></textarea>
+				<!-- 내용을 입력하기 위한 텍스트 영역입니다.
+				     "rows=10"은 텍스트 영역의 기본 높이를 설정하며, "form-control" 클래스는 Bootstrap 스타일을 적용합니다. -->
+			</div>
+
+			<input type="submit" value="저장하기" class="btn btn-primary my-2">
+			<!-- "저장하기" 버튼으로 폼을 제출합니다.
+			     "btn btn-primary"는 Bootstrap 스타일로 파란색 버튼을 표시하며, "my-2"는 상하 여백을 추가합니다. -->
+		</form>
+	</div>
+</html>

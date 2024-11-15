@@ -1,0 +1,8 @@
+<div th:fragment="formErrorsFragment" class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+	<!-- 폼 유효성 검증 에러가 있는 경우, 경고 메시지를 표시합니다.
+				     th:if="{#fields.hasAnyErrors()}"는 에러가 있는 경우에만 이 div를 렌더링합니다.
+				     "alert alert-danger"는 Bootstrap 스타일로 경고 메시지를 빨간색 박스로 표시합니다. -->
+	<div th:each="err : ${#fields.allErrors()}" th:text="${err}" />
+	<!-- th:each="err : ${#fields.allErrors()}"는 모든 에러 메시지를 순회하여 출력합니다.
+				     th:text="${err}"는 각 에러 메시지를 텍스트로 렌더링합니다. -->
+</div>
