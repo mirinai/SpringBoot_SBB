@@ -10,15 +10,20 @@
 				<th>작성날짜</th> <!-- 작성 날짜 열 -->
 			</tr>
 		</thead>
-		<tr>
+		<tbody>
 
-			<!-- `questionList`의 각 요소를 반복하여 행을 생성 -->
-		<tr th:each="question, loop : ${questionList}">
-			<td th:text="${loop.count}"></td> <!-- 반복 횟수를 번호로 표시 (1부터 시작) -->
-
+			<!-- `paging`의 각 요소를 반복하여 행을 생성 -->
+		<tr th:each="question, loop : ${paging}">
+			<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td> 
+			<!-- 게시물 번호 = 전체 게시물 갯수 - (현재 페이지 * 페이지당 게시물 갯수) - 나열 인덱스 -->
+	
 			<td>
 				<!-- 각 질문의 ID를 URL에 동적으로 추가하여 상세 페이지로 이동하는 링크 생성 -->
 				<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
+				<span class="text-danger small ms-2"
+				th:if="${#lists.size(question.answerList)>0}"
+				th:text="${#lists.size(question.answerList)}">
+				</span>
 			</td>
 			<td th:text="${#temporals.format(question.createDateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
 			<!-- 작성 날짜를 형식화하여 출력 -->
@@ -26,6 +31,29 @@
 
 		</tbody> <!-- 테이블 본문 끝 -->
 	</table>
+	<!-- 페이징 처리 시작 -->
+	
+	<div th:if="${!paging.isEmpty()}">
+		<ul class="pagination justify-content-center">
+			<li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
+				<a class="page-link" th:href="@{|?page=${paging.number-1}|}">
+					<span>prev</span>
+				</a>
+			</li>
+			<li th:each="page: ${#numbers.sequence(startPage,endPage)}"
+			
+			th:classappend="${page==paging.number} ? 'active' "class="page-item">
+				<a th:text="${page+1}" class="page-link" th:href="@{|?page=${page}|}"></a>
+			</li>
+			<li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
+				<a class="page-link" th:href="@{|?page=${paging.number+1}|}">
+									<span>next</span>
+				</a>
+			</li>
+		</ul>		
+	</div>
+	<!-- 페이징 처리 끝 -->
+	
 	<a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
 </div>
 </html>

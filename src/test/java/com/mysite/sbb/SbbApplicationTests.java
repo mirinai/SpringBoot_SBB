@@ -16,6 +16,7 @@ import com.mysite.sbb.answer.Answer;
 import com.mysite.sbb.answer.AnswerRepository;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.question.QuestionRepository;
+import com.mysite.sbb.question.QuestionService;
 
 import jakarta.transaction.Transactional;
 
@@ -32,7 +33,10 @@ class SbbApplicationTests {
 	@Autowired // Spring이 AnswerRepository 객체를 자동으로 주입
 	private AnswerRepository answerRepository;
 	
-	@Transactional //하나의 트랜잭션 내에서 데이터베이스 세션이 유지됨
+	@Autowired
+	private QuestionService questionService;
+	
+//	@Transactional //하나의 트랜잭션 내에서 데이터베이스 세션이 유지됨, 디폴트가 롤백임
 	@Test // JUnit 테스트 메서드로 지정
 	void testJpa() {
 		
@@ -162,6 +166,12 @@ class SbbApplicationTests {
 //		// Answer 리스트의 크기가 1인지 확인하여, 연관된 답변이 하나임을 검증
 //		assertEquals("어 알아서 만들어짐", answerList.get(0).getContent()); 
 //		// 첫 번째 Answer 객체의 내용이 "어 알아서 만들어짐"과 일치하는지 검증
-
+		
+		
+		for(int i = 1;i<=300;i++) {
+			String subject = String.format("테스트 데이터다.:[%03d]", i);
+			String content = "내용없음";
+			this.questionService.create(subject, content);
+		}
 	}
 }

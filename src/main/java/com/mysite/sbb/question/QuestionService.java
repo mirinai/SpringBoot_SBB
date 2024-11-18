@@ -1,15 +1,23 @@
 package com.mysite.sbb.question;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.SortedMap;
 
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest; 
+//현재 페이지와 한페이지에 보여줄 게시물 개수등을 설정하여 페이징 요청을 하는 클래스다.
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.mysite.sbb.DataNotFoundException;
 
 import lombok.RequiredArgsConstructor;
+
+
 
 @RequiredArgsConstructor // final 필드를 포함한 생성자를 자동으로 생성해 주는 Lombok 애너테이션
 @Service // 이 클래스를 Spring의 서비스로 등록하여 비즈니스 로직을 처리하도록 지정
@@ -45,6 +53,20 @@ public class QuestionService {
     	q.setContent(content);
     	q.setCreateDateTime(LocalDateTime.now());
     	this.questionRepository.save(q);
+    }
+    
+    public Page<Question> getList(int page){
+    	
+    	List<Sort.Order> sorts = new ArrayList<>();
+    	sorts.add(Sort.Order.desc("createDateTime"));
+    	
+    	Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
+    	
+    	return this.questionRepository.findAll(pageable);// page: 조회할 페이지, 10: 한페이에 보여 줄 게시물의 갯수
+    	
+    	// 정렬 기준: createDateTime 필드를 기준으로 내림차순 정렬.
+    	// 페이지 크기: 한 페이지당 10개씩 표시.
+    	// Pageable 객체 생성: PageRequest.of(page, 10, Sort.by(sorts)).
     }
 
 }

@@ -2,6 +2,7 @@ package com.mysite.sbb.question;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -31,12 +32,34 @@ public class QuestionController {
 	private final QuestionService questionService;
 
 	@GetMapping("/list") // "/question/list" URL로 GET 요청이 오면 이 메서드가 실행됨
-	public String list(Model model) { // 매개변수로 Model을 지정하면 객체가 알아서 만들어짐
+	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page) { 
+		// 매개변수로 Model을 지정하면 객체가 알아서 만들어짐
+		//list?page=0: 디폴트, 이런식으로 값 가져오기
+		
+		
+		
+		
+		
+		Page<Question> paging = this.questionService.getList(page);// 현재 페이지에 해당하는 데이터
+		model.addAttribute("paging",paging);// 페이징 데이터를 뷰에 전달
+		
+		int startPage = Math.max(0, paging.getNumber()-5);
+//		int startPage = 0;
+		int endPage = Math.min(paging.getTotalPages()-1, paging.getNumber()+4);
+//		int endPage = Math.min(9, paging.getTotalPages() - 1);
+		
+		
+		
+		model.addAttribute("startPage",startPage);
+		model.addAttribute("endPage",endPage);
+		
+
+		
 //		List<Question> questionList = this.questionRepository.findAll(); // 리포지토리를 사용해 모든 질문 데이터를 가져옴
 		
-		List<Question> questionList = this.questionService.getList();
-		
-		model.addAttribute("questionList", questionList); 
+//		List<Question> questionList = this.questionService.getList();
+//		
+//		model.addAttribute("questionList", questionList); 
 		// 모델에 "questionList"라는 이름으로 데이터를 추가하여 뷰로 전달
 		
 		return "question_list"; 
