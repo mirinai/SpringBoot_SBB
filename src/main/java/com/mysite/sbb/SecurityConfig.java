@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,6 +16,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration // 이 클래스가 Spring의 설정 클래스임을 나타냄
 @EnableWebSecurity // Spring Security의 웹 보안 지원을 활성화함
+@EnableMethodSecurity(prePostEnabled = true)// 메서드 보안을 활성화하고 @PreAuthorize, @PostAuthorize를 사용할 수 있도록 설정.
 public class SecurityConfig {
 
 	@Bean // 이 메서드가 반환하는 객체를 Spring의 Bean으로 등록함

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import com.mysite.sbb.answer.Answer;
+import com.mysite.sbb.user.SiteUser;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -11,6 +12,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,5 +36,11 @@ public class Question {
 	
 	@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
 	private List<Answer> answerList; // 질문에 달린 답변 목록, 질문과 답변 간의 일대다 관계를 나타냄. 질문 삭제 시 관련 답변들도 함께 삭제됨
+	
+	@ManyToOne
+	private SiteUser author;
+	
+	private LocalDateTime modifyDate;
+	
 
 }

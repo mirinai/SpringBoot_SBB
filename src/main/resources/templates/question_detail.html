@@ -15,6 +15,13 @@
 					<div th:text="${#temporals.format(question.createDateTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
 				</div>
 			</div>
+			<div class="my-3">
+				<!-- 질문 수정 링크 (인증된 사용자이면서 작성자인 경우에만 표시) -->
+				<a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary"
+					sec:authorize="isAuthenticated()"
+					th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+					th:text="고치기"></a>
+			</div>
 		</div>
 	</div>
 
@@ -31,6 +38,9 @@
 			</div>
 			<div class="d-flex justify-content-end">
 				<div class="badge bg-light text-dark p-2 text-start">
+					<div class="mb-2">
+						<span th:if="${answer.author != null}" th:text="${answer.author.username}"></span>
+					</div>
 					<div th:text="${#temporals.format(answer.createDate,'yyyy-MM-dd HH:mm:ss')}"></div>
 				</div>
 			</div>
@@ -42,14 +52,19 @@
 	<form th:action="@{|/answer/create/${question.id}|}" th:object="${answerForm}" method="post" class="mb-3">
 		<!-- 답변 내용을 입력하는 텍스트 영역 -->
 		<div th:replace="~{form_errors :: formErrorsFragment}"></div>
-		
-		<textarea th:field="*{content}" id="content" rows="15" class="form-control"></textarea>
+
+		<textarea sec:authorize="isAnonymous()" disabled th:field="*{content}" id="content" rows="15"
+			class="form-control"></textarea><!-- 로그인 안함-->
+
+		<textarea sec:authorize="isAuthenticated()" th:field="*{content}" id="content" rows="15"
+			class="form-control"></textarea><!-- 로그인 함 -->
 
 		<!-- 답변 등록 버튼 -->
 		<input type="submit" value="답변 등록">
 	</form>
 
 </div>
+
 </html>
 <!-- 질문의 제목을 출력 -->
 <!--<h1 th:text="${question.subject}"></h1>-->

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
 
 import com.mysite.sbb.question.Question;
+import com.mysite.sbb.user.SiteUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -18,7 +19,7 @@ public class AnswerService {
  private final AnswerRepository answerRepository;
 
  // 답변을 생성하고 저장하는 메서드
- public void create(Question question, String content) {
+ public void create(Question question, String content, SiteUser author) {
      // 새로운 Answer 객체 생성
      Answer answer = new Answer();
      
@@ -30,6 +31,8 @@ public class AnswerService {
      
      // 답변이 연결된 질문 설정
      answer.setQuestion(question);
+     
+     answer.setAuthor(author);
      
      // 답변을 데이터베이스에 저장
      this.answerRepository.save(answer);

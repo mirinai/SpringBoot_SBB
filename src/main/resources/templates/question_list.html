@@ -4,20 +4,21 @@
 	<table class="table">
 		<!-- 테이블 헤더 설정: 제목과 작성 날짜 열을 만듦 -->
 		<thead class="table-dark">
-			<tr>
+			<tr class="text-center">
 				<th>번호</th> <!-- 번호 열 -->
-				<th>제목</th> <!-- 제목 열 -->
+				<th style="width:50%">제목</th> <!-- 제목 열 -->
+				<th>글쓴이</th>
 				<th>작성날짜</th> <!-- 작성 날짜 열 -->
 			</tr>
 		</thead>
 		<tbody>
 
 			<!-- `paging`의 각 요소를 반복하여 행을 생성 -->
-		<tr th:each="question, loop : ${paging}">
+		<tr class="text-center" th:each="question, loop : ${paging}">
 			<td th:text="${paging.getTotalElements - (paging.number * paging.size) - loop.index}"></td> 
 			<!-- 게시물 번호 = 전체 게시물 갯수 - (현재 페이지 * 페이지당 게시물 갯수) - 나열 인덱스 -->
 	
-			<td>
+			<td class="text-start">
 				<!-- 각 질문의 ID를 URL에 동적으로 추가하여 상세 페이지로 이동하는 링크 생성 -->
 				<a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a>
 				<span class="text-danger small ms-2"
@@ -25,6 +26,9 @@
 				th:text="${#lists.size(question.answerList)}">
 				</span>
 			</td>
+			<td><span th:if="${question.author != null}"
+				th:text="${question.author.username}"></span></td>
+				<!-- 글쓴이 -->
 			<td th:text="${#temporals.format(question.createDateTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
 			<!-- 작성 날짜를 형식화하여 출력 -->
 		</tr>

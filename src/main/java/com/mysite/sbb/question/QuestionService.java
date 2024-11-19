@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.mysite.sbb.DataNotFoundException;
+import com.mysite.sbb.user.SiteUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -47,11 +48,12 @@ public class QuestionService {
         }
     }
     
-    public void create(String subject, String content) {
+    public void create(String subject, String content, SiteUser user) {
     	Question q  = new Question();
     	q.setSubject(subject);
     	q.setContent(content);
     	q.setCreateDateTime(LocalDateTime.now());
+    	q.setAuthor(user);
     	this.questionRepository.save(q);
     }
     
@@ -68,7 +70,13 @@ public class QuestionService {
     	// 페이지 크기: 한 페이지당 10개씩 표시.
     	// Pageable 객체 생성: PageRequest.of(page, 10, Sort.by(sorts)).
     }
-
+    
+    public void modify(Question question, String subject, String content) {
+    	question.setSubject(subject);
+    	question.setContent(content);
+    	question.setModifyDate(LocalDateTime.now());
+    	this.questionRepository.save(question);
+    }
 }
 
 

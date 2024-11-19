@@ -8,11 +8,11 @@
 		     "container" 클래스는 Bootstrap 스타일로 페이지 내용을 중앙 정렬하고 여백을 추가합니다. -->
 
 		<h5 class="my-3 border-bottom pb-2">질문 등록</h5>
-		<!-- "질문 등록"이라는 제목을 표시합니다.
-		     "my-3"는 상하 여백을 추가하고, "border-bottom"은 하단에 경계를 추가하며,
-		     "pb-2"는 아래쪽 패딩을 추가하여 디자인을 개선합니다. -->
-
-		<form th:action="@{/question/create}" th:object="${questionForm}" method="post">
+		<!-- "질문 등록"이라는 제목을 표시합니다. "my-3"는 상하 여백을 추가하고, 
+		"border-bottom"은 하단에 경계를 추가하며, "pb-2"는 아래쪽 패딩을 추가하여 디자인을 개선합니다. -->
+		
+		<form  th:object="${questionForm}" method="post"><!-- th:action="@{/question/create}" 없앰 -->
+			<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
 			<!-- "질문 등록"을 위한 폼(form) 요소입니다.
 			     th:action="@{/question/create}"는 폼 제출 시 "/question/create" URL로 POST 요청을 보냅니다.
 			     th:object="${questionForm}"는 폼 데이터와 연결된 객체(QuestionForm)를 설정합니다. -->

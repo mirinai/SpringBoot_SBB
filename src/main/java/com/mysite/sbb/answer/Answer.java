@@ -3,6 +3,7 @@ package com.mysite.sbb.answer;
 import java.time.LocalDateTime;
 
 import com.mysite.sbb.question.Question;
+import com.mysite.sbb.user.SiteUser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,5 +32,11 @@ public class Answer {
 	private Question question; // 답변이 속한 질문. 여러 개의 답변이 하나의 질문에 연결되는 다대일 관계를 나타냄
 	// Q : A = N : 1
 	
+	
+	@ManyToOne
+	private SiteUser author;
+	
+	
+	private LocalDateTime modifyDate;
 
 }
