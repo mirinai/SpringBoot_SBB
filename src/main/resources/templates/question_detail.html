@@ -9,9 +9,20 @@
 
 			<div class="card-text" style="white-space:pre-line;" th:text="${question.content}">
 			</div>
-
+			
 			<div class="d-flex justify-content-end">
+				<!-- 질문 고친 날짜 -->
+				<div th:if="${question.modifyDate != null}"
+				class="badge bg-light text-dark p-2 text-start mx-3">
+						<div class="mb-2">modified at</div>
+						<div th:text="${#temporals.format(question.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+				</div>
+				<!-- 질문 쓴 유저이름과 날짜 -->
 				<div class="badge bg-light text-dark p-2 text-start">
+					<div class="mb-2">
+						<span th:if="${question.author != null}"
+						th:text="${question.author.username}"></span>
+					</div>
 					<div th:text="${#temporals.format(question.createDateTime, 'yyyy-MM-dd HH:mm:ss')}"></div>
 				</div>
 			</div>
@@ -21,6 +32,17 @@
 					sec:authorize="isAuthenticated()"
 					th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
 					th:text="고치기"></a>
+				<a href="javascript:void(0)" th:data-uri="@{|/question/delete/${question.id}|}"
+					class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()" th:if="${question.author != null and 
+					#authentication.getPrincipal().getUsername() == question.author.username}" th:text="삭제"></a>
+				<!--
+					- 삭제 버튼 (JavaScript로 동작 처리).
+					- `th:data-uri`: 삭제 요청 URL 설정.
+					- `sec:authorize`: 인증된 사용자만 표시.
+					- `th:if`: 작성자와 현재 사용자 동일할 때만 표시.
+					- `class`: Bootstrap 스타일 적용.
+					- `delete`: 삭제이벤트를 찾을 때 쓰는 클래스
+					-->
 			</div>
 		</div>
 	</div>
@@ -37,12 +59,34 @@
 			<div class="card-text" style="white-space: pre-line;" th:text="${answer.content}">
 			</div>
 			<div class="d-flex justify-content-end">
+				<!-- 댓글 고친 날짜, 시간 -->
+				<div th:if="${answer.modifyDate != null}"
+				class="badge bg-light text-dark p-2 text-start mx-3">
+					<div class="mb-2">modified at</div>
+					<div th:text="${#temporals.format(answer.modifyDate, 'yyyy-MM-dd HH:mm')}"></div>
+				</div>
+				<!-- 댓글 쓴 유저이름과 날짜, 시간 -->
 				<div class="badge bg-light text-dark p-2 text-start">
 					<div class="mb-2">
 						<span th:if="${answer.author != null}" th:text="${answer.author.username}"></span>
 					</div>
 					<div th:text="${#temporals.format(answer.createDate,'yyyy-MM-dd HH:mm:ss')}"></div>
 				</div>
+
+			</div>
+			<div class="my-3">
+				<!-- 고치기 버튼 -->
+				<a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
+					sec:authorize="isAuthenticated()" 
+					th:if="${answer.author != null and #authentication.getPrincipal().getUsername() == 
+									answer.author.username}" th:text="고치기"></a>
+				<!-- 지우기 버튼 -->
+				<a href="javascript:void(0);" th:data-uri="@{|/answer/delete/${answer.id}|}"
+				class="delete btn btn-sm btn-outline-secondary"
+				sec:authorize="isAuthenticated()"
+				th:if="${answer.author != null and #authentication.getPrincipal().getUsername()
+				== answer.author.username}"
+				th:text="삭제"></a>
 			</div>
 		</div>
 		<!-- 답변 되풀이 끝남 -->
@@ -64,6 +108,25 @@
 	</form>
 
 </div>
+<script layout:fragment="script" type="text/javascript">
+
+	// "delete" 클래스를 가진 모든 요소를 가져옴
+	const delete_elements = document.getElementsByClassName("delete");
+
+	// 가져온 요소들을 배열로 변환하고, 각 요소에 대해 반복
+	Array.from(delete_elements).forEach(function (element) {
+		// 각 요소에 클릭 이벤트 리스너 추가
+		element.addEventListener('click', function () {
+			// 삭제 확인 메시지를 띄움
+			if (confirm("정말로 삭제하시겠습니까?")) {
+				// 사용자가 확인을 누르면, 해당 요소의 `data-uri` 속성에 저장된 URL로 이동
+				location.href = this.dataset.uri;
+			}
+		});
+	});
+
+
+</script>
 
 </html>
 <!-- 질문의 제목을 출력 -->

@@ -1,9 +1,11 @@
 package com.mysite.sbb.answer;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
+import com.mysite.sbb.DataNotFoundException;
 import com.mysite.sbb.question.Question;
 import com.mysite.sbb.user.SiteUser;
 
@@ -15,27 +17,48 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class AnswerService {
 
- // AnswerRepository를 주입받아 사용
- private final AnswerRepository answerRepository;
+	// AnswerRepository를 주입받아 사용
+	private final AnswerRepository answerRepository;
 
- // 답변을 생성하고 저장하는 메서드
- public void create(Question question, String content, SiteUser author) {
-     // 새로운 Answer 객체 생성
-     Answer answer = new Answer();
-     
-     // 답변 내용 설정
-     answer.setContent(content);
-     
-     // 답변 생성 날짜 설정
-     answer.setCreateDate(LocalDateTime.now());
-     
-     // 답변이 연결된 질문 설정
-     answer.setQuestion(question);
-     
-     answer.setAuthor(author);
-     
-     // 답변을 데이터베이스에 저장
-     this.answerRepository.save(answer);
- }
+	// 답변을 생성하고 저장하는 메서드
+	public void create(Question question, String content, SiteUser author) {
+		// 새로운 Answer 객체 생성
+		Answer answer = new Answer();
+
+		// 답변 내용 설정
+		answer.setContent(content);
+
+		// 답변 생성 날짜 설정
+		answer.setCreateDate(LocalDateTime.now());
+
+		// 답변이 연결된 질문 설정
+		answer.setQuestion(question);
+
+		answer.setAuthor(author);
+
+		// 답변을 데이터베이스에 저장
+		this.answerRepository.save(answer);
+
+	}
+	
+	 public Answer getAnswer(Integer id) {
+    	 Optional<Answer> answer = this.answerRepository.findById(id);
+    	 
+    	 if(answer.isPresent()) {
+    		 return answer.get();
+    	 }
+    	 else {
+    		 throw new DataNotFoundException("answer not found");
+    	 }
+     }
+	 
+	 public void modify(Answer answer, String content) {
+		 answer.setContent(content);
+		 answer.setModifyDate(LocalDateTime.now());
+		 this.answerRepository.save(answer);
+	 }
+	 
+	 public void delete(Answer answer) {
+		 this.answerRepository.delete(answer);
+	 }
 }
-

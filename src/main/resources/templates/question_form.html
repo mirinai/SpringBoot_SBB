@@ -16,6 +16,13 @@
 			<!-- "질문 등록"을 위한 폼(form) 요소입니다.
 			     th:action="@{/question/create}"는 폼 제출 시 "/question/create" URL로 POST 요청을 보냅니다.
 			     th:object="${questionForm}"는 폼 데이터와 연결된 객체(QuestionForm)를 설정합니다. -->
+				 <!--
+				 - CSRF 토큰을 포함하는 숨겨진 입력 필드.
+				 - `th:name="${_csrf.parameterName}"`: CSRF 파라미터 이름(예: "_csrf")을 동적으로 설정.
+				 - `th:value="${_csrf.token}"`: CSRF 토큰 값을 동적으로 설정.
+				 - 이 필드는 CSRF 보호를 활성화한 Spring Security 환경에서 필수.
+				 - 서버는 제출된 CSRF 토큰을 검증하여 요청의 유효성을 확인.
+				 -->
 
 			<div th:replace="~{form_errors :: formErrorsFragment}"></div>
 
