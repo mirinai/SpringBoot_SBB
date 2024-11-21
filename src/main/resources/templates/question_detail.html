@@ -6,9 +6,20 @@
 	<h2 class="border-bottom py-2" th:text="${question.subject}"></h2>
 	<div class="card my-3">
 		<div class="card-body">
-
-			<div class="card-text" style="white-space:pre-line;" th:text="${question.content}">
-			</div>
+			<!-- text area -->
+			<div class="card-text" th:utext="${@commonUtil.markdown(question.content)}"></div>
+			<!--
+			- "card-text": Bootstrap 클래스 적용으로 텍스트 영역 스타일 지정.
+			- `th:utext`: HTML 태그를 해석하여 그대로 출력. 
+			  - `utext`는 "unescaped text"를 의미하며, 태그를 그대로 렌더링함.
+			  - 일반 텍스트는 `th:text`를 사용하지만, HTML 태그를 포함하는 경우 `th:utext` 사용.
+			- `${@commonUtil.markdown(question.content)}`:
+			  - `@commonUtil`: Spring Bean으로 등록된 CommonUtil 객체를 호출.
+			  - `markdown(question.content)`: 질문의 내용(`question.content`)을 Markdown에서 HTML로 변환.
+			  - 변환된 HTML 문자열을 그대로 출력.
+			-->
+<!--			<div class="card-text" style="white-space:pre-line;" th:text="${question.content}">-->
+<!--			</div>-->
 			
 			<div class="d-flex justify-content-end">
 				<!-- 질문 고친 날짜 -->
@@ -27,11 +38,21 @@
 				</div>
 			</div>
 			<div class="my-3">
+				<!-- 추천 버튼 -->
+				<a href="javascript:void(0);" class="recommand btn btn-sm btn-outline-secondary"
+				th:data-uri="@{|/question/vote/${question.id}|}">
+				추천
+				<span class="badge rounded-pill bg-success"
+				th:text="${#lists.size(question.voter)}"></span>
+			</a>
+			<!-- recommand : 추천버튼을 클릭하는 이벤트를 얻기 위한 클래스 -->
+				
 				<!-- 질문 수정 링크 (인증된 사용자이면서 작성자인 경우에만 표시) -->
 				<a th:href="@{|/question/modify/${question.id}|}" class="btn btn-sm btn-outline-secondary"
 					sec:authorize="isAuthenticated()"
 					th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
 					th:text="고치기"></a>
+					
 				<a href="javascript:void(0)" th:data-uri="@{|/question/delete/${question.id}|}"
 					class="delete btn btn-sm btn-outline-secondary" sec:authorize="isAuthenticated()" th:if="${question.author != null and 
 					#authentication.getPrincipal().getUsername() == question.author.username}" th:text="삭제"></a>
@@ -55,9 +76,16 @@
 	<!-- 답변 되풀이하기 -->
 
 	<div class="card my-3" th:each="answer : ${question.answerList}">
+		
+		<!-- 답변 앵커 -->
+		<a th:id="|answer_${answer.id}|"></a>
+		
 		<div class="card-body">
-			<div class="card-text" style="white-space: pre-line;" th:text="${answer.content}">
-			</div>
+			<!-- 답변의 텍스트 영역 -->
+			<div class="card-text" th:utext="@{commonUtil.markdown(answer.content)}"></div>
+			
+<!--			<div class="card-text" style="white-space: pre-line;" th:text="${answer.content}">-->
+<!--			</div>-->
 			<div class="d-flex justify-content-end">
 				<!-- 댓글 고친 날짜, 시간 -->
 				<div th:if="${answer.modifyDate != null}"
@@ -75,6 +103,14 @@
 
 			</div>
 			<div class="my-3">
+				<!-- 답변 추천 버튼 -->
+				<a href="javascript:void(0);" class="recommand btn btn-sm btn-outline-secondary"
+				th:data-uri="@{|/answer/vote/${answer.id}|}">
+				추천
+				<span class="badge rounded-pill bg-success"
+				th:text="${#lists.size(answer.voter)}"></span>
+				</a>
+				
 				<!-- 고치기 버튼 -->
 				<a th:href="@{|/answer/modify/${answer.id}|}" class="btn btn-sm btn-outline-secondary"
 					sec:authorize="isAuthenticated()" 
@@ -121,10 +157,18 @@
 			if (confirm("정말로 삭제하시겠습니까?")) {
 				// 사용자가 확인을 누르면, 해당 요소의 `data-uri` 속성에 저장된 URL로 이동
 				location.href = this.dataset.uri;
-			}
+			};
 		});
 	});
-
+	
+	const recommand_elements = document.getElementsByClassName("recommand");
+	Array.from(recommand_elements).forEach(function(element){
+		element.addEventListener('click', function(){
+			if(confirm("정말로 추천하시겠습니까?")){
+				location.href=this.dataset.uri;
+			};
+		});
+	});
 
 </script>
 

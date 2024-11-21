@@ -1,6 +1,24 @@
 <!--<link rel="stylesheet" type="text/css" th:href="@{/bootstrap.min.css}"> -->
 <html layout:decorate="~{layout}">
 <div layout:fragment="content" class="container my-3">
+	<!-- 검색 -->
+	<div class="row my-3">
+		<div class="col-6">
+			<!-- 버튼: "/question/create"로 이동 -->
+			<a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+		</div>
+		<div class="col-6">
+			<!-- 검색창과 버튼을 한 줄로 배치 -->
+			<div class="input-group">
+				<input type="text" id="search_kw" class="form-control" th:value="${kw}">
+				<!-- 검색 키워드 입력 필드 -->
+				<!-- 자바스크립트에서 검색창에 입력된 값을 읽을 수 있도록 id="search_kw"라는 값을 넣음 -->
+				<button class="btn btn-outline-secondary" type="button" id="btn_search">찾기</button>
+				<!-- "찾기" 버튼 -->
+			</div>
+		</div>
+	</div>
+	
 	<table class="table">
 		<!-- 테이블 헤더 설정: 제목과 작성 날짜 열을 만듦 -->
 		<thead class="table-dark">
@@ -40,17 +58,25 @@
 	<div th:if="${!paging.isEmpty()}">
 		<ul class="pagination justify-content-center">
 			<li class="page-item" th:classappend="${!paging.hasPrevious} ? 'disabled'">
-				<a class="page-link" th:href="@{|?page=${paging.number-1}|}">
+<!--				<a class="page-link" th:href="@{|?page=${paging.number-1}|}">-->
+					<a class="page-link" href="javascript:void(0)"
+					th:data-page="${paging.number-1}">
 					<span>prev</span>
 				</a>
+					
+				
 			</li>
 			<li th:each="page: ${#numbers.sequence(startPage,endPage)}"
 			
 			th:classappend="${page==paging.number} ? 'active' "class="page-item">
-				<a th:text="${page+1}" class="page-link" th:href="@{|?page=${page}|}"></a>
+<!--				<a th:text="${page+1}" class="page-link" th:href="@{|?page=${page}|}"></a>-->
+					<a th:text="${page+1}" class="page-link" href="javascript:void(0)"
+					th:data-page="${page+1}"></a>
 			</li>
 			<li class="page-item" th:classappend="${!paging.hasNext} ? 'disabled'">
-				<a class="page-link" th:href="@{|?page=${paging.number+1}|}">
+<!--				<a class="page-link" th:href="@{|?page=${paging.number+1}|}">-->
+					<a class="page-link" href="javascript:void(0)"
+					th:data-page="${paging.number+1}">
 									<span>next</span>
 				</a>
 			</li>
@@ -58,6 +84,58 @@
 	</div>
 	<!-- 페이징 처리 끝 -->
 	
-	<a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+<!--	<a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>-->
+
+<!-- page와 kw를 동시에 GET으로 요청하기 -->
+	<form th:action="@{/question/list}" method="get" id="searchForm">
+		<input type="hidden" id="kw" name="kw" th:value="${kw}">
+		<!-- 
+		    - 숨겨진 필드로 검색 키워드(`kw`)를 포함.
+		    - id="kw": 숨겨진 필드의 고유 ID.
+		    - name="kw": 서버로 전송될 파라미터 이름.
+		    - th:value="${kw}": 현재 검색 키워드를 폼에 설정.
+		    -->
+		<input type="hidden" id="page" name="page" th:value="${paging.number}">
+		<!--
+			id="page": 숨겨진 필드의 고유 ID.
+			name="page": 서버로 전송될 파라미터 이름.
+		-->
+		<!-- paging.number는 현재 페이지 번호를 의미하며, Spring Data JPA의 Page 객체에서 제공(0부터 시작)-->
+	</form>
 </div>
+<script layout:fragment="script" type="text/javascript">
+	
+	// 모든 "page-link" 클래스를 가진 요소를 가져옴
+	const page_elements = document.getElementsByClassName("page-link");
+
+	// 가져온 요소들을 배열로 변환하고, 각각의 요소에 대해 반복 처리
+	Array.from(page_elements).forEach(function(element) {
+	    
+	    // 각 요소에 클릭 이벤트 리스너를 추가
+	    element.addEventListener('click', function() {
+	        // 클릭된 요소의 data-page 값을 숨겨진 필드("page")에 설정
+	        document.getElementById('page').value = this.dataset.page;
+
+	        // 폼을 제출하여 서버로 요청 전송
+	        document.getElementById('searchForm').submit();
+	    });
+	});
+
+	// "btn_search" ID를 가진 검색 버튼 요소를 가져옴
+	const btn_search = document.getElementById("btn_search");
+
+	// 검색 버튼에 클릭 이벤트 리스너를 추가
+	btn_search.addEventListener('click', function() {
+	    // 검색 입력 필드("search_kw")의 값을 숨겨진 필드("kw")에 설정
+	    document.getElementById('kw').value = document.getElementById('search_kw').value;
+
+	    // 검색 버튼을 클릭하면 페이지 번호를 0으로 초기화 (첫 페이지부터 조회)
+	    document.getElementById('page').value = 0;
+
+	    // 폼을 제출하여 서버로 요청 전송
+	    document.getElementById('searchForm').submit();
+	});
+
+	
+</script>
 </html>

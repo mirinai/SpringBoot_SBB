@@ -40,28 +40,34 @@ public class QuestionController {
 	private final UserService userService;
 
 	@GetMapping("/list") // "/question/list" URL로 GET 요청이 오면 이 메서드가 실행됨
-	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page) { 
+	public String list(Model model, @RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "kw", defaultValue = "") String kw) { 
 		// 매개변수로 Model을 지정하면 객체가 알아서 만들어짐
 		//list?page=0: 디폴트, 이런식으로 값 가져오기
+		// /list?page=2&kw=Spring 이렇게 주소를 가져옴
+		// /list?page=0&kw= : 디폴트
 		
+		Page<Question> paging = this.questionService.getList(page, kw);
+		 // 현재 페이지와 검색 키워드에 해당하는 데이터를 가져옴 (페이징 및 검색 처리)
 		
-		
-		
-		
-		Page<Question> paging = this.questionService.getList(page);// 현재 페이지에 해당하는 데이터
-		model.addAttribute("paging",paging);// 페이징 데이터를 뷰에 전달
+		model.addAttribute("paging",paging);
+		// 페이징 데이터를 뷰에 전달
 		
 		int startPage = Math.max(0, paging.getNumber()-5);
+		// 시작 페이지 번호를 현재 페이지에서 -5 범위로 설정 (최소 0으로 제한)
 //		int startPage = 0;
 		int endPage = Math.min(paging.getTotalPages()-1, paging.getNumber()+4);
+		// 끝 페이지 번호를 현재 페이지에서 +4 범위로 설정 (최대 총 페이지 수 - 1로 제한)
 //		int endPage = Math.min(9, paging.getTotalPages() - 1);
 		
 		
 		
 		model.addAttribute("startPage",startPage);
+		// 뷰에서 사용할 시작 페이지 번호를 전달
 		model.addAttribute("endPage",endPage);
-		
-
+		// 뷰에서 사용할 끝 페이지 번호를 전달
+		model.addAttribute("kw", kw);
+		 // 검색 키워드를 뷰에 전달하여 검색 결과와 입력된 키워드 표시
 		
 //		List<Question> questionList = this.questionRepository.findAll(); // 리포지토리를 사용해 모든 질문 데이터를 가져옴
 		
@@ -203,7 +209,30 @@ public class QuestionController {
 		return "redirect:/";
 	}
 	
+	
+	@PreAuthorize("isAuthenticated()")
+	// 인증된 사용자만 이 메서드에 접근 가능. 인증되지 않은 경우 로그인 페이지로 리다이렉트.
 
+	@GetMapping("/vote/{id}")
+	// "/vote/{id}" 경로로 GET 요청이 들어오면 이 메서드를 실행.
+	// {id}는 투표하려는 질문의 고유 ID.
+
+	public String questionVote(Principal principal, @PathVariable("id") Integer id) {
+	    
+	    Question question = this.questionService.getQuestion(id);
+	    // ID를 기반으로 질문 객체를 데이터베이스에서 조회.
+
+	    SiteUser siteUser = this.userService.getUser(principal.getName());
+	    // 현재 로그인한 사용자의 정보를 Principal 객체를 통해 가져와 SiteUser로 조회.
+
+	    this.questionService.vote(question, siteUser);
+	    // 질문에 대해 현재 사용자가 투표를 수행하도록 처리.
+
+	    return String.format("redirect:/question/detail/%s", id);
+	    // 투표가 완료되면 질문 상세 페이지로 리다이렉트.
+	}
+
+	
 	
 
 }

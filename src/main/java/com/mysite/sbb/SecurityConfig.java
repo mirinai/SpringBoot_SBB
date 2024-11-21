@@ -41,9 +41,13 @@ public class SecurityConfig {
 						// 로그인 성공 후 리디렉션 경로
 						.defaultSuccessUrl("/"))
 				.logout((logout) -> logout
-						.logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
-						.logoutSuccessUrl("/")
-						.invalidateHttpSession(true))
+					    // 로그아웃 요청을 처리할 URL 경로를 지정
+					    .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
+					    // 로그아웃 성공 후 리다이렉션할 URL 설정
+					    .logoutSuccessUrl("/")
+					    // 로그아웃 시 현재 HTTP 세션을 무효화하여 모든 세션 데이터 제거
+					    .invalidateHttpSession(true)
+					)
 
 		;
 

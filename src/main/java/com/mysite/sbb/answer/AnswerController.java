@@ -76,8 +76,10 @@ public class AnswerController {
 		}
 
 		// 유효성 검사를 통과한 경우 답변을 저장
-		this.answerService.create(question, answerForm.getContent(), siteUser); // 답변 내용을 저장할 때 관련 질문과 답변 내용을 전달
-		return String.format("redirect:/question/detail/%s", id); // 답변을 저장한 후 해당 질문 상세 페이지로 리다이렉트
+		Answer answer = this.answerService.create(question, answerForm.getContent(), siteUser); 
+		// 답변 내용을 저장할 때 관련 질문과 답변 내용을 전달
+		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), answer.getId()); 
+		// 답변을 저장한 후 해당 질문 상세 페이지로 리다이렉트
 	}
 	
 	@PreAuthorize("isAuthenticated()")
@@ -127,8 +129,31 @@ public class AnswerController {
 		
 		this.answerService.delete(answer);
 		
-		return String.format("redirect:/question/detail/%s", answer.getQuestion().getId());
+		return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(),answer.getId());
 	}
+	
+	
+	@PreAuthorize("isAuthenticated()")
+	// 인증된 사용자만 접근 가능하도록 설정. 인증되지 않은 경우 Spring Security가 로그인 페이지로 리다이렉트.
+	@GetMapping("/vote/{id}")
+	// "/vote/{id}" 경로로 GET 요청이 들어올 때 이 메서드를 실행. {id}는 투표하려는 답변의 고유 ID.
+	public String answerVote(Principal principal, @PathVariable("id") Integer id) {
+	    
+	    Answer answer = this.answerService.getAnswer(id);
+	    // ID를 기반으로 데이터베이스에서 답변 객체를 조회.
+
+	    SiteUser siteUser = this.userService.getUser(principal.getName());
+	    // 현재 로그인한 사용자의 이름을 Principal 객체에서 가져와 SiteUser 객체로 조회.
+
+	    this.answerService.vote(answer, siteUser);
+	    // 답변에 대해 현재 사용자가 투표를 수행하도록 처리.
+
+	    return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), answer.getId());
+	    // 투표 완료 후 해당 답변이 포함된 질문 상세 페이지로 리디렉트.
+	    // "#answer_{id}"는 특정 답변으로 스크롤 이동을 위한 앵커 태그.
+	}
+
+	
 	
 
 }

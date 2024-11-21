@@ -21,7 +21,7 @@ public class AnswerService {
 	private final AnswerRepository answerRepository;
 
 	// 답변을 생성하고 저장하는 메서드
-	public void create(Question question, String content, SiteUser author) {
+	public Answer create(Question question, String content, SiteUser author) {
 		// 새로운 Answer 객체 생성
 		Answer answer = new Answer();
 
@@ -38,6 +38,8 @@ public class AnswerService {
 
 		// 답변을 데이터베이스에 저장
 		this.answerRepository.save(answer);
+		
+		return answer;
 
 	}
 	
@@ -60,5 +62,11 @@ public class AnswerService {
 	 
 	 public void delete(Answer answer) {
 		 this.answerRepository.delete(answer);
+	 }
+	 
+	 
+	 public void vote(Answer answer, SiteUser siteUser) {
+		 answer.getVoter().add(siteUser);
+		 this.answerRepository.save(answer);
 	 }
 }
