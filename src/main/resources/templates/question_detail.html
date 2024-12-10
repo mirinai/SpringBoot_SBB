@@ -161,14 +161,21 @@
 		});
 	});
 	
+	// "recommand" 클래스를 가진 모든 요소들을 선택하여 `recommand_elements` 변수에 저장합니다.
 	const recommand_elements = document.getElementsByClassName("recommand");
+
+	// 선택된 요소들을 배열로 변환한 후, 각 요소에 대해 반복 작업을 수행합니다.
 	Array.from(recommand_elements).forEach(function(element){
-		element.addEventListener('click', function(){
-			if(confirm("정말로 추천하시겠습니까?")){
-				location.href=this.dataset.uri;
-			};
-		});
+	    // 각 요소에 클릭 이벤트 리스너를 추가합니다.
+	    element.addEventListener('click', function(){
+	        // 사용자가 추천을 확인하는 메시지를 표시합니다.
+	        if(confirm("정말로 추천하시겠습니까?")){
+	            // 사용자가 확인을 클릭하면, 해당 요소의 data-uri 속성에 지정된 URL로 이동합니다.
+	            location.href = this.dataset.uri;
+	        }
+	    });
 	});
+
 
 </script>
 

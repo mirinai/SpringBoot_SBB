@@ -113,6 +113,7 @@ public class QuestionController {
 
 	@PreAuthorize("isAuthenticated()")
 //	@PreAuthorize("hasRole('ROLE_ADMIN')")
+//	@PreAuthorize("hasRole('ADMIN')")
 	@PostMapping("/create") // "/create" URL로 POST 요청이 오면 실행되는 메서드
 	public String questionCreate(@Valid QuestionForm questionForm, BindingResult bindingResult, Principal principal) {
 	    
