@@ -82,7 +82,7 @@
 		
 		<div class="card-body">
 			<!-- 답변의 텍스트 영역 -->
-			<div class="card-text" th:utext="@{commonUtil.markdown(answer.content)}"></div>
+			<div class="card-text" th:utext="${@commonUtil.markdown(answer.content)}"></div>
 			
 <!--			<div class="card-text" style="white-space: pre-line;" th:text="${answer.content}">-->
 <!--			</div>-->
